@@ -1,9 +1,11 @@
+import { RollbackOutlined, SaveOutlined } from '@ant-design/icons';
 import { ActionType, ProForm, ProFormDatePicker } from '@ant-design/pro-components';
-import { Spin } from 'antd';
+import { Col, Row, Space, Spin } from 'antd';
 import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useContainerTitle } from '../../../common/Container/Container';
+import ProButton from '../../../common/ProButton/ProButton';
 import ProHeader from '../../../common/ProHeader/ProHeader';
 import ProWorkflow from '../../../common/ProWorkflow/ProWorkflow';
 import { deepComparison } from '../../../functions';
@@ -92,9 +94,27 @@ const AppealItem = () => {
                 }}
             />
             <ProWorkflow workflows={appeal?.workflows} />
-            <ProForm submitter={false} form={form}>
-                <ProFormDatePicker label='Дата забора' name='operationDate' />
+
+            <ProForm submitter={false} form={form} className='appeal-item-form'>
+                <Row gutter={[10, 10]}>
+                    <Col flex={1}>
+                        <ProFormDatePicker label='Дата забора' name='operationDate' />
+                    </Col>
+                    <Col>
+                        <div style={{ textAlign: 'right' }}>
+                            <Space>
+                                <ProButton onAsyncClick={() => onSaveForm()} icon={<SaveOutlined />}>
+                                    Сохранить
+                                </ProButton>
+                                <ProButton type='default' onClick={() => onSetForm()} icon={<RollbackOutlined />}>
+                                    Отмена
+                                </ProButton>
+                            </Space>
+                        </div>
+                    </Col>
+                </Row>
             </ProForm>
+
             <AppealPosition actionRef={appealPositonRef} appealId={id} appeal={appeal} />
         </Spin>
     );

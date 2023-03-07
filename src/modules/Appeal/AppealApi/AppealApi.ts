@@ -83,9 +83,10 @@ export const AppealApi = MainApi.injectEndpoints({
                 }),
             }),
             postActionAppeal: build.mutation<void, AppealVM>({
-                query: () => ({
+                query: (body) => ({
                     url: '/appeals/action',
                     method: 'POST',
+                    body,
                 }),
             }),
             getDirectories: build.query<AppealDirectories, void>({
