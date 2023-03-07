@@ -2,14 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import jwt_decode from 'jwt-decode';
 import { useAppSelector } from '../../../redux/hooks';
 import { RootState } from '../../../redux/store';
-
-export type Roles =
-    // Суперпользователь
-    | 'root'
-    // Администратор
-    | 'admin'
-    /// Пользователь ЛК
-    | 'contact';
+import { Roles } from '../../../redux/types';
 
 type AuthStateType = {
     token: string | null;

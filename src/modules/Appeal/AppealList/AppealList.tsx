@@ -5,11 +5,19 @@ import { useNavigate } from 'react-router-dom';
 import { PRIMARY_COLOR } from '../../../bootstrap';
 import ProButton from '../../../common/ProButton/ProButton';
 import { getTableRequest } from '../../../functions';
-import { AppealListParams, AppealListVM, useGetDirectoriesQuery, useLazyGetAppealsQuery } from '../AppealApi/AppealApi';
+import {
+    AppealListParams,
+    AppealListVM,
+    useCreateAppealMutation,
+    useGetDirectoriesQuery,
+    useLazyGetAppealsQuery,
+} from '../AppealApi/AppealApi';
 
 const AppealList = () => {
     const [getAppeals] = useLazyGetAppealsQuery();
     const { data: directories } = useGetDirectoriesQuery();
+    const [create] = useCreateAppealMutation();
+
     const navigate = useNavigate();
 
     return (
@@ -18,11 +26,10 @@ const AppealList = () => {
             columns={[
                 { dataIndex: 'code', width: 100, title: 'Код заявки', valueType: 'text' },
                 {
-                    dataIndex: 'createdDate',
+                    dataIndex: 'created',
                     width: 160,
                     title: 'Дата создания',
                     valueType: 'dateApartRange',
-                    searchState: 'hidden',
                     excelRender: (text) => dayjs(text).format('DD.MM.YYYY HH:mm'),
                 },
                 {
@@ -41,7 +48,17 @@ const AppealList = () => {
                     navigate(`/appeals/item/${record.id}`);
                 }
             }}
-            toolBarRender={() => [<ProButton key='create'>Создать заявку</ProButton>]}
+            toolBarRender={() => [
+                <ProButton
+                    key='create'
+                    onAsyncClick={async () => {
+                        const id = await create().unwrap();
+                        if (id) navigate(`/appeals/item/${id}`);
+                    }}
+                >
+                    Создать заявку
+                </ProButton>,
+            ]}
             downloadProps={{
                 fileName: 'Заявки',
             }}

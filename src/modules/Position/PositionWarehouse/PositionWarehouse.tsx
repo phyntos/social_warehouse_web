@@ -45,7 +45,7 @@ const PositionWarehouse = () => {
                 x: 1400,
             }}
             disableHeightScroll
-            id='AppealsTable'
+            id='WarehousesTable'
             rowKey='id'
             ordered
             colorPrimary={PRIMARY_COLOR}

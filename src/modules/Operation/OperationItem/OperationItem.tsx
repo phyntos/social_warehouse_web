@@ -4,12 +4,12 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useContainerTitle } from '../../../common/Container/Container';
 import ProHeader from '../../../common/ProHeader/ProHeader';
-import { useGetAppealByIdQuery } from '../../Appeal/AppealApi/AppealApi';
+import { useGetOperationByIdQuery } from '../../Operation/OperationApi/OperationApi';
 
 const OperationItem = () => {
     useContainerTitle('Карточка операции');
     const { id = '' } = useParams();
-    const { data: appeal, isFetching } = useGetAppealByIdQuery(id, { skip: !id });
+    const { data: appeal, isFetching } = useGetOperationByIdQuery(id, { skip: !id });
 
     return (
         <Spin spinning={isFetching}>

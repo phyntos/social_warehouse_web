@@ -5,20 +5,20 @@ import { useNavigate } from 'react-router-dom';
 import { PRIMARY_COLOR } from '../../../bootstrap';
 import { getTableRequest } from '../../../functions';
 import {
-    AppealListParams,
-    AppealListVM,
+    OperationListParams,
+    OperationListVM,
     useGetDirectoriesQuery,
-    useLazyGetAppealsQuery,
-} from '../../Appeal/AppealApi/AppealApi';
+    useLazyGetOperationsQuery,
+} from '../../Operation/OperationApi/OperationApi';
 
 const OperationList = () => {
-    const [getAppeals] = useLazyGetAppealsQuery();
+    const [getOperations] = useLazyGetOperationsQuery();
     const { data: directories } = useGetDirectoriesQuery();
     const navigate = useNavigate();
 
     return (
-        <ProTabulator<AppealListVM, AppealListParams>
-            request={getTableRequest((params) => getAppeals(params).unwrap())}
+        <ProTabulator<OperationListVM, OperationListParams>
+            request={getTableRequest((params) => getOperations(params).unwrap())}
             columns={[
                 { dataIndex: 'code', width: 100, title: 'Код заявки', valueType: 'text' },
                 {
@@ -52,7 +52,7 @@ const OperationList = () => {
                 x: 1400,
             }}
             disableHeightScroll
-            id='AppealsTable'
+            id='OperationsTable'
             rowKey='id'
             ordered
             colorPrimary={PRIMARY_COLOR}

@@ -34,13 +34,13 @@ const Main = () => {
                     label: 'Профиль',
                     element: <Profile />,
                     path: '/profile',
-                    roles: ['root'],
+                    roles: ['root', 'contact', 'sales-manager', 'sales-head', 'admin', 'warehouse-manager'],
                 },
                 {
                     key: 'position',
                     icon: <ClusterOutlined />,
                     label: 'Положение',
-                    roles: ['root'],
+                    roles: ['root', 'contact', 'sales-manager', 'sales-head', 'admin', 'warehouse-manager'],
                     children: [
                         {
                             key: 'warehouses',
@@ -48,7 +48,7 @@ const Main = () => {
                             label: 'Склады',
                             element: <Position type='Warehouse' />,
                             path: '/position/warehouses',
-                            roles: ['root'],
+                            roles: ['root', 'contact', 'sales-manager', 'sales-head', 'admin', 'warehouse-manager'],
                         },
                         {
                             key: 'shops',
@@ -56,7 +56,7 @@ const Main = () => {
                             label: 'Магазины',
                             element: <Position type='Shop' />,
                             path: '/position/shops',
-                            roles: ['root'],
+                            roles: ['root', 'contact', 'sales-manager', 'sales-head', 'admin', 'warehouse-manager'],
                         },
                     ],
                 },
@@ -66,7 +66,7 @@ const Main = () => {
                     label: 'Заявки',
                     element: <Appeal />,
                     path: '/appeals/*',
-                    roles: ['root'],
+                    roles: ['root', 'contact', 'sales-manager', 'sales-head', 'admin', 'warehouse-manager'],
                 },
                 {
                     key: 'operations',
@@ -74,7 +74,7 @@ const Main = () => {
                     label: 'Операции',
                     element: <Operation />,
                     path: '/operations/*',
-                    roles: ['root'],
+                    roles: ['root', 'contact', 'sales-manager', 'sales-head', 'admin', 'warehouse-manager'],
                 },
                 {
                     key: 'catalog',
@@ -82,7 +82,7 @@ const Main = () => {
                     label: 'Каталог',
                     element: <Catalog />,
                     path: '/catalog',
-                    roles: ['root'],
+                    roles: ['root', 'contact', 'sales-manager', 'sales-head', 'admin', 'warehouse-manager'],
                 },
                 {
                     key: 'report',
@@ -90,7 +90,7 @@ const Main = () => {
                     label: 'Отчёты',
                     element: <Report />,
                     path: '/report',
-                    roles: ['root'],
+                    roles: ['root', 'contact', 'sales-manager', 'sales-head', 'admin', 'warehouse-manager'],
                 },
             ]}
             defaultKey='appeals'

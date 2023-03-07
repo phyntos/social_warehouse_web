@@ -3,20 +3,20 @@ import { PaginationParams, PaginationResponse } from '../../../functions';
 import { MainApi } from '../../../redux/api';
 import { ActionVM, BaseDirectory, BaseVM, ContactVM, LogVM, ShopVM } from '../../../redux/types';
 
-export type AppealListVM = {
+export type OperationListVM = {
     id: string;
     code: string;
     status: string;
-    statusCode: AppealStatusCodes;
+    statusCode: OperationStatusCodes;
     shopName?: string;
     created: string;
 };
 
-export interface AppealVM extends BaseVM {
+export interface OperationVM extends BaseVM {
     id: string;
     code?: string;
     createdDate?: string;
-    actionCode?: AppealActionCodes;
+    actionCode?: OperationActionCodes;
     contact?: ContactVM & {
         shop?: ShopVM;
     };
@@ -25,11 +25,11 @@ export interface AppealVM extends BaseVM {
     status?: BaseDirectory;
     statusCode?: string;
     logs?: LogVM;
-    actions?: ActionVM<AppealActionCodes>[];
-    workflows?: WorkflowVM<AppealStatusCodes>[];
+    actions?: ActionVM<OperationActionCodes>[];
+    workflows?: WorkflowVM<OperationStatusCodes>[];
 }
 
-export type AppealListParams = {
+export type OperationListParams = {
     code?: string;
     status?: string;
     shopName?: string;
@@ -39,11 +39,11 @@ export type AppealListParams = {
 
 export type DirectoryVM = { label: string; value: string };
 
-export type AppealDirectories = {
+export type OperationDirectories = {
     statuses: DirectoryVM[];
 };
 
-export type AppealActionCodes =
+export type OperationActionCodes =
     /// Продавец отправляет на Удалено
     | 'DELETE_AT_DRAFT'
     /// Клиент отправляет на Классификацию
@@ -51,7 +51,7 @@ export type AppealActionCodes =
     /// Согласовать
     | 'CONFIRM';
 
-export type AppealStatusCodes =
+export type OperationStatusCodes =
     /// черновик
     | 'DRAFT'
     /// удалено
@@ -63,58 +63,58 @@ export type AppealStatusCodes =
     /// Отказано клиентом
     | 'CLIENT_REJECTED';
 
-type AppealListPaginationResponse = PaginationResponse<AppealListVM>;
-type AppealListPaginationParams = PaginationParams<AppealListParams>;
+type OperationListPaginationResponse = PaginationResponse<OperationListVM>;
+type OperationListPaginationParams = PaginationParams<OperationListParams>;
 
-export const AppealApi = MainApi.injectEndpoints({
+export const OperationApi = MainApi.injectEndpoints({
     endpoints: (build) => {
         return {
-            getAppeals: build.query<AppealListPaginationResponse, AppealListPaginationParams>({
+            getOperations: build.query<OperationListPaginationResponse, OperationListPaginationParams>({
                 query: (params) => ({
-                    url: '/appeals',
+                    url: '/operations',
                     method: 'GET',
                     params,
                 }),
             }),
-            createAppeal: build.mutation<string, void>({
+            createOperation: build.mutation<string, void>({
                 query: () => ({
-                    url: '/appeals',
+                    url: '/operations',
                     method: 'POST',
                 }),
             }),
-            postActionAppeal: build.mutation<void, AppealVM>({
+            postActionOperation: build.mutation<void, OperationVM>({
                 query: () => ({
-                    url: '/appeals/action',
+                    url: '/operations/action',
                     method: 'POST',
                 }),
             }),
-            getDirectories: build.query<AppealDirectories, void>({
+            getDirectories: build.query<OperationDirectories, void>({
                 query: () => '/directories/appeal',
             }),
-            getAppealById: build.query<AppealVM, string>({
+            getOperationById: build.query<OperationVM, string>({
                 query: (id) => ({
-                    url: '/appeals/' + id,
+                    url: '/operations/' + id,
                     method: 'GET',
                 }),
-                providesTags: (res, err, req) => [{ type: 'Appeal', id: req }],
+                providesTags: (res, err, req) => [{ type: 'Operation', id: req }],
             }),
-            updateAppeal: build.mutation<void, AppealVM>({
+            updateOperation: build.mutation<void, OperationVM>({
                 query: (body) => ({
-                    url: '/appeals',
+                    url: '/operations',
                     method: 'PUT',
                     body,
                 }),
-                invalidatesTags: (res, err, req) => [{ type: 'Appeal', id: req.id }],
+                invalidatesTags: (res, err, req) => [{ type: 'Operation', id: req.id }],
             }),
         };
     },
 });
 
 export const {
-    useLazyGetAppealsQuery,
+    useLazyGetOperationsQuery,
     useGetDirectoriesQuery,
-    useGetAppealByIdQuery,
-    useCreateAppealMutation,
-    usePostActionAppealMutation,
-    useUpdateAppealMutation,
-} = AppealApi;
+    useGetOperationByIdQuery,
+    useCreateOperationMutation,
+    usePostActionOperationMutation,
+    useUpdateOperationMutation,
+} = OperationApi;
