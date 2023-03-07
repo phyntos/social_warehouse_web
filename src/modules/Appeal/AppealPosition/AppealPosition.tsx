@@ -1,43 +1,59 @@
 import { ActionType } from '@ant-design/pro-components';
-import { EditableProTabulator } from 'pro-tabulator';
+import { ProTabulatorColumn } from 'pro-tabulator/dist/types';
 import React from 'react';
-import { PRIMARY_COLOR } from '../../../bootstrap';
-import { getTableRequest } from '../../../functions';
-import { AppealVM } from '../AppealApi/AppealApi';
-import {
-    AppealPositionParams,
-    AppealPositionVM,
-    useCreateAppealPositionMutation,
-    useDeleteAppealPositionMutation,
-    useLazyGetAppealPositionsQuery,
-    useUpdateAppealPositionMutation,
-} from '../AppealApi/AppealPositionApi';
+import { useDirectoryEditableColumns, useGetDirectoryQuery } from '../../../common/Directory/DirectoryApi';
+import EditableTable from '../../../common/EditableTable/EditableTable';
+
+export type AppealPositionVM = {
+    id: string;
+    name?: string;
+    count?: number;
+    warehouseId?: string;
+    warehouseName?: string;
+    catalogId?: string;
+    catalogName?: string;
+    warehouseCounts?: { id: string; count: string }[];
+};
+
+export type AppealPositionParams = {
+    appealId?: string;
+    name?: string;
+    count?: number;
+};
 
 const AppealPosition = ({
     appealId,
-    appeal,
     actionRef,
 }: {
     appealId: string;
-    appeal?: AppealVM;
     actionRef?: React.MutableRefObject<ActionType | undefined> | undefined;
 }) => {
-    const [getAppealPositions] = useLazyGetAppealPositionsQuery();
-    const [createAppealPosition] = useCreateAppealPositionMutation();
-    const [updateAppealPositon] = useUpdateAppealPositionMutation();
-    const [deleteAppealPositon] = useDeleteAppealPositionMutation();
+    const { data: warehouses } = useGetDirectoryQuery({ type: 'warehouse' });
+    const warehouseDirectoryColumns = useDirectoryEditableColumns<AppealPositionVM, 'warehouse'>(
+        'warehouse',
+        'Склад (с)',
+    );
+    const catalogDirectoryColumns = useDirectoryEditableColumns<AppealPositionVM, 'catalog'>('catalog', 'Товар');
+
+    const warehouseColumns: ProTabulatorColumn<AppealPositionVM>[] = (warehouses || []).map((warehouse, index) => ({
+        dataIndex: warehouse.value + index,
+        title: warehouse.label,
+        width: 100,
+        render: (text, record) => {
+            const find = record.warehouseCounts?.find((x) => x.id === warehouse.value);
+            if (find) return find.count;
+            return 'Не определено';
+        },
+        editable: false,
+    }));
 
     return (
-        <EditableProTabulator<AppealPositionVM, AppealPositionParams>
-            id='CatalogList'
-            request={getTableRequest((params) => getAppealPositions(params).unwrap())}
+        <EditableTable<AppealPositionVM, AppealPositionParams>
+            actionRef={actionRef}
             columns={[
-                {
-                    dataIndex: 'name',
-                    title: 'Товар',
-                    valueType: 'text',
-                    width: '30%',
-                },
+                ...warehouseDirectoryColumns,
+                ...catalogDirectoryColumns,
+                ...warehouseColumns,
                 {
                     dataIndex: 'count',
                     title: 'Количество',
@@ -46,32 +62,7 @@ const AppealPosition = ({
                 },
             ]}
             params={{ appealId }}
-            rowKey='id'
-            ordered
-            actionRef={actionRef}
-            downloadProps={{
-                fileName: 'Список товаров заявки №' + appeal?.code,
-            }}
-            disableHeightScroll
-            colorPrimary={PRIMARY_COLOR}
-            editableProps={{
-                onCreate: async () => {
-                    return await createAppealPosition(appealId).unwrap();
-                },
-                onDelete: async (id) => {
-                    await deleteAppealPositon(String(id)).unwrap();
-                },
-                onSave: async (data) => {
-                    await updateAppealPositon(data).unwrap();
-                },
-                hidden: {
-                    actions: {
-                        delete: true,
-                    },
-                    deleteMultiple: true,
-                    saveMultiple: true,
-                },
-            }}
+            type='appealPositions'
         />
     );
 };

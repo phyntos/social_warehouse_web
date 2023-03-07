@@ -44,6 +44,8 @@ export type BaseDirectory = {
     color?: string;
 };
 
+export type DirectoryVM = { label: string; value: string };
+
 export type BaseVM = {
     createdBy?: UserVM;
     createdById?: string;

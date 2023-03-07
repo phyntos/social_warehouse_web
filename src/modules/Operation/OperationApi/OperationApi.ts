@@ -1,7 +1,7 @@
 import { WorkflowVM } from '../../../common/ProWorkflow/ProWorkflow';
 import { PaginationParams, PaginationResponse } from '../../../functions';
 import { MainApi } from '../../../redux/api';
-import { ActionVM, BaseDirectory, BaseVM, ContactVM, LogVM, ShopVM } from '../../../redux/types';
+import { ActionVM, BaseDirectory, BaseVM, ContactVM, DirectoryVM, LogVM, ShopVM } from '../../../redux/types';
 
 export type OperationListVM = {
     id: string;
@@ -36,8 +36,6 @@ export type OperationListParams = {
     createdAfter?: string;
     createdBefore?: string;
 };
-
-export type DirectoryVM = { label: string; value: string };
 
 export type OperationDirectories = {
     statuses: DirectoryVM[];

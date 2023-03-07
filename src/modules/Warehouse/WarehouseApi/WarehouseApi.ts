@@ -3,20 +3,20 @@ import { PaginationParams, PaginationResponse } from '../../../functions';
 import { MainApi } from '../../../redux/api';
 import { ActionVM, BaseDirectory, BaseVM, ContactVM, DirectoryVM, LogVM, ShopVM } from '../../../redux/types';
 
-export type AppealListVM = {
+export type WarehouseListVM = {
     id: string;
     code: string;
     status: string;
-    statusCode: AppealStatusCodes;
+    statusCode: WarehouseStatusCodes;
     shopName?: string;
     created: string;
 };
 
-export interface AppealVM extends BaseVM {
+export interface WarehouseVM extends BaseVM {
     id: string;
     code?: string;
     createdDate?: string;
-    actionCode?: AppealActionCodes;
+    actionCode?: WarehouseActionCodes;
     contact?: ContactVM & {
         shop?: ShopVM;
     };
@@ -25,11 +25,11 @@ export interface AppealVM extends BaseVM {
     status?: BaseDirectory;
     statusCode?: string;
     logs?: LogVM;
-    actions?: ActionVM<AppealActionCodes>[];
-    workflows?: WorkflowVM<AppealStatusCodes>[];
+    actions?: ActionVM<WarehouseActionCodes>[];
+    workflows?: WorkflowVM<WarehouseStatusCodes>[];
 }
 
-export type AppealListParams = {
+export type WarehouseListParams = {
     code?: string;
     status?: string;
     shopName?: string;
@@ -37,11 +37,11 @@ export type AppealListParams = {
     createdBefore?: string;
 };
 
-export type AppealDirectories = {
+export type WarehouseDirectories = {
     statuses: DirectoryVM[];
 };
 
-export type AppealActionCodes =
+export type WarehouseActionCodes =
     /// Продавец отправляет на Удалено
     | 'DELETE_AT_DRAFT'
     /// Клиент отправляет на Классификацию
@@ -49,7 +49,7 @@ export type AppealActionCodes =
     /// Согласовать
     | 'CONFIRM';
 
-export type AppealStatusCodes =
+export type WarehouseStatusCodes =
     /// черновик
     | 'DRAFT'
     /// удалено
@@ -61,59 +61,42 @@ export type AppealStatusCodes =
     /// Отказано клиентом
     | 'CLIENT_REJECTED';
 
-type AppealListPaginationResponse = PaginationResponse<AppealListVM>;
-type AppealListPaginationParams = PaginationParams<AppealListParams>;
+type WarehouseListPaginationResponse = PaginationResponse<WarehouseListVM>;
+type WarehouseListPaginationParams = PaginationParams<WarehouseListParams>;
 
-export const AppealApi = MainApi.injectEndpoints({
+export const WarehouseApi = MainApi.injectEndpoints({
     endpoints: (build) => {
         return {
-            getAppeals: build.query<AppealListPaginationResponse, AppealListPaginationParams>({
+            getWarehouses: build.query<WarehouseListPaginationResponse, WarehouseListPaginationParams>({
                 query: (params) => ({
-                    url: '/appeals',
+                    url: '/warehouses',
                     method: 'GET',
                     params,
                 }),
             }),
-            createAppeal: build.mutation<string, void>({
+            createWarehouse: build.mutation<string, void>({
                 query: () => ({
-                    url: '/appeals',
+                    url: '/warehouses',
                     method: 'POST',
                 }),
             }),
-            postActionAppeal: build.mutation<void, AppealVM>({
+            postActionWarehouse: build.mutation<void, WarehouseVM>({
                 query: (body) => ({
-                    url: '/appeals/action',
+                    url: '/warehouses/action',
                     method: 'POST',
                     body,
                 }),
             }),
-            getDirectories: build.query<AppealDirectories, void>({
+            getDirectories: build.query<WarehouseDirectories, void>({
                 query: () => '/directories/appeal',
-            }),
-            getAppealById: build.query<AppealVM, string>({
-                query: (id) => ({
-                    url: '/appeals/' + id,
-                    method: 'GET',
-                }),
-                providesTags: (res, err, req) => [{ type: 'Appeal', id: req }],
-            }),
-            updateAppeal: build.mutation<void, AppealVM>({
-                query: (body) => ({
-                    url: '/appeals',
-                    method: 'PUT',
-                    body,
-                }),
-                invalidatesTags: (res, err, req) => [{ type: 'Appeal', id: req.id }],
             }),
         };
     },
 });
 
 export const {
-    useLazyGetAppealsQuery,
+    useLazyGetWarehousesQuery,
     useGetDirectoriesQuery,
-    useGetAppealByIdQuery,
-    useCreateAppealMutation,
-    usePostActionAppealMutation,
-    useUpdateAppealMutation,
-} = AppealApi;
+    useCreateWarehouseMutation,
+    usePostActionWarehouseMutation,
+} = WarehouseApi;

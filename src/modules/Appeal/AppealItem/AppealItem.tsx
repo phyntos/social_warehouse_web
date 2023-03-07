@@ -115,7 +115,7 @@ const AppealItem = () => {
                 </Row>
             </ProForm>
 
-            <AppealPosition actionRef={appealPositonRef} appealId={id} appeal={appeal} />
+            <AppealPosition actionRef={appealPositonRef} appealId={id} />
         </Spin>
     );
 };
