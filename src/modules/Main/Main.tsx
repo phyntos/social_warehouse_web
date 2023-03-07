@@ -1,12 +1,24 @@
 import { ContainerOutlined } from '@ant-design/icons';
-import { UserOutlined } from '@ant-design/icons/lib/icons';
+import {
+    ClusterOutlined,
+    ControlOutlined,
+    DatabaseOutlined,
+    PartitionOutlined,
+    PieChartOutlined,
+    ShopOutlined,
+    UserOutlined,
+} from '@ant-design/icons/lib/icons';
 import React from 'react';
 import Container from '../../common/Container/Container';
+import Logo from '../../components/Logo/Logo';
+import { useAppDispatch } from '../../redux/hooks';
+import Report from '../Report/Report';
 import Appeal from '../Appeal/Appeal';
 import { setToken, useTokenData } from '../Auth/AuthApi/AuthSlice';
+import Catalog from '../Catalog/Catalog';
+import Operation from '../Operation/Operation';
+import Position from '../Position/Position';
 import Profile from '../Profile/Profile';
-import { useAppDispatch } from '../../redux/hooks';
-import Logo from '../../components/Logo/Logo';
 
 const Main = () => {
     const fullName = useTokenData('fullname');
@@ -22,7 +34,31 @@ const Main = () => {
                     label: 'Профиль',
                     element: <Profile />,
                     path: '/profile',
-                    roles: [],
+                    roles: ['root'],
+                },
+                {
+                    key: 'position',
+                    icon: <ClusterOutlined />,
+                    label: 'Положение',
+                    roles: ['root'],
+                    children: [
+                        {
+                            key: 'warehouses',
+                            icon: <DatabaseOutlined />,
+                            label: 'Склады',
+                            element: <Position type='Warehouse' />,
+                            path: '/position/warehouses',
+                            roles: ['root'],
+                        },
+                        {
+                            key: 'shops',
+                            icon: <ShopOutlined />,
+                            label: 'Магазины',
+                            element: <Position type='Shop' />,
+                            path: '/position/shops',
+                            roles: ['root'],
+                        },
+                    ],
                 },
                 {
                     key: 'appeals',
@@ -30,7 +66,31 @@ const Main = () => {
                     label: 'Заявки',
                     element: <Appeal />,
                     path: '/appeals/*',
-                    roles: [],
+                    roles: ['root'],
+                },
+                {
+                    key: 'operations',
+                    icon: <PartitionOutlined />,
+                    label: 'Операции',
+                    element: <Operation />,
+                    path: '/operations/*',
+                    roles: ['root'],
+                },
+                {
+                    key: 'catalog',
+                    icon: <ControlOutlined />,
+                    label: 'Каталог',
+                    element: <Catalog />,
+                    path: '/catalog',
+                    roles: ['root'],
+                },
+                {
+                    key: 'report',
+                    icon: <PieChartOutlined />,
+                    label: 'Отчёты',
+                    element: <Report />,
+                    path: '/report',
+                    roles: ['root'],
                 },
             ]}
             defaultKey='appeals'
@@ -39,7 +99,7 @@ const Main = () => {
                 role,
                 fullName,
             }}
-            logo={(collapsed) => <Logo className='container-logo' size={collapsed ? 'mini' : 'normal'} />}
+            logo={(collapsed) => <Logo size={collapsed ? 'mini' : 'normal'} />}
             onLogout={() => dispatch(setToken(null))}
         />
     );

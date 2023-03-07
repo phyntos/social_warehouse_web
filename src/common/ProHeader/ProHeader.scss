@@ -27,7 +27,7 @@
     color: #8c8c8c;
     .pro-header-info-value {
         font-weight: 500;
-        color: #3a70a6;
+        color: var(--primary-color);
         font-size: 13px;
     }
     &.pro-header-info-danger {

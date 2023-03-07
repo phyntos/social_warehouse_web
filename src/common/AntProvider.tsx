@@ -3,7 +3,15 @@ import React from 'react';
 import { legacyLogicalPropertiesTransformer, StyleProvider } from '@ant-design/cssinjs';
 import { ConfigProvider, Empty } from 'antd';
 
-const AntProvider = ({ children, primaryColor }: { children: React.ReactNode; primaryColor?: string }) => {
+const AntProvider = ({
+    children,
+    primaryColor,
+    prefix,
+}: {
+    children: React.ReactNode;
+    primaryColor?: string;
+    prefix?: string;
+}) => {
     return (
         <StyleProvider hashPriority='high' transformers={[legacyLogicalPropertiesTransformer]}>
             <ConfigProvider
@@ -19,7 +27,7 @@ const AntProvider = ({ children, primaryColor }: { children: React.ReactNode; pr
                 }
                 locale={ruRU}
                 renderEmpty={() => <Empty description='Отсутствуют данные' />}
-                prefixCls='social'
+                prefixCls={prefix}
             >
                 {children}
             </ConfigProvider>

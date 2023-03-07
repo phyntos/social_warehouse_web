@@ -1,0 +1,6 @@
+.appeal-spin-nested-loading {
+    height: 100%;
+    .appeal-spin.appeal-spin-spinning {
+        max-height: unset !important;
+    }
+}

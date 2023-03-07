@@ -1,19 +1,35 @@
 import { LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { Breadcrumb, ConfigProvider, Layout, Menu, Space, Tooltip } from 'antd';
+import { ItemType } from 'antd/es/menu/hooks/useItems';
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import './Container.scss';
 
 const { Header, Sider, Content } = Layout;
 
-type ContainerMenuItem<ItemKey extends string, Roles extends string> = {
+type ContainerMenuItemWithChildren<ItemKey extends string, Roles extends string> = {
+    key: ItemKey;
+    label: string;
+    path?: undefined;
+    element?: undefined;
+    roles: Roles[];
+    icon?: React.ReactNode;
+    children: ContainerMenuItem<ItemKey, Roles>[];
+};
+
+type ContainerMenuItemWithPath<ItemKey extends string, Roles extends string> = {
     key: ItemKey;
     label: string;
     path: string;
     element: React.ReactNode;
     roles: Roles[];
     icon?: React.ReactNode;
+    children?: undefined;
 };
+
+type ContainerMenuItem<ItemKey extends string, Roles extends string> =
+    | ContainerMenuItemWithPath<ItemKey, Roles>
+    | ContainerMenuItemWithChildren<ItemKey, Roles>;
 
 export const ContainerContext = React.createContext<{ title: string; setTitle: (title: string) => void }>({
     title: '',
@@ -31,6 +47,69 @@ export const useContainerTitle = (title: string) => {
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [title]);
+};
+
+const getMenuItem = <ItemKey extends string, Roles extends string>(
+    items: ContainerMenuItem<ItemKey, Roles>[],
+    key: ItemKey,
+): ContainerMenuItemWithPath<ItemKey, Roles> => {
+    for (const item of items) {
+        if (item.children) {
+            const menuItem = getMenuItem(item.children, key);
+            if (menuItem.key) return menuItem;
+            else continue;
+        }
+
+        if (item.key === key) return item;
+    }
+    return {} as ContainerMenuItemWithPath<ItemKey, Roles>;
+};
+
+const getMenuItemWithParents = <ItemKey extends string, Roles extends string>(
+    items: ContainerMenuItem<ItemKey, Roles>[],
+    key: ItemKey,
+): ContainerMenuItem<ItemKey, Roles>[] => {
+    for (const item of items) {
+        if (item.children) {
+            const menuItems = getMenuItemWithParents(item.children, key);
+            if (menuItems.length > 0) return [item, ...menuItems];
+            else continue;
+        }
+
+        if (item.key === key) return [item];
+    }
+    return [];
+};
+
+const getMenuItemByString = <ItemKey extends string, Roles extends string>(
+    items: ContainerMenuItem<ItemKey, Roles>[],
+    key: string,
+): ContainerMenuItemWithPath<ItemKey, Roles> => {
+    for (const item of items) {
+        if (item.children) {
+            const menuItem = getMenuItemByString(item.children, key);
+            if (menuItem.key) return menuItem;
+            else continue;
+        }
+        if (key.includes(item.key)) return item;
+    }
+    return {} as ContainerMenuItemWithPath<ItemKey, Roles>;
+};
+
+const filterMenuItems = <ItemKey extends string, Roles extends string>(
+    items: ContainerMenuItem<ItemKey, Roles>[],
+    role: Roles | null,
+): ContainerMenuItem<ItemKey, Roles>[] => {
+    return items
+        .filter((item) => (item.roles.length > 0 && role ? item.roles.includes(role) : true))
+        .map((item) => {
+            if (!item.children) return item;
+
+            return {
+                ...item,
+                children: filterMenuItems(item.children, role),
+            };
+        });
 };
 
 const Container = <ItemKey extends string, Roles extends string>({
@@ -58,25 +137,20 @@ const Container = <ItemKey extends string, Roles extends string>({
     const location = useLocation();
     const navigate = useNavigate();
 
-    const items = menuItems.filter((item) =>
-        item.roles.length > 0 && userData.role ? item.roles.includes(userData.role) : true,
-    );
+    const items = filterMenuItems(menuItems, userData.role);
 
-    const getPath = (key?: ItemKey) => {
+    const getPath = (key?: string) => {
         if (!key) return null;
-        const find = menuItems.find((item) => item.key === key);
+        const find = getMenuItem(items, key);
         if (!find) return null;
         return find;
     };
 
     useEffect(() => {
-        const find = items.find((navItem) => {
-            return location.pathname.includes(navItem.key);
-        });
-
+        const find = getMenuItemByString(items, location.pathname);
         if (find) setActiveKey(find.key);
         else setActiveKey(defaultKey);
-    }, [location, items, userData.role, defaultKey]);
+    }, [location.pathname, items, userData.role, defaultKey]);
 
     const [collapsed, setCollapsed] = useState(true);
 
@@ -84,27 +158,39 @@ const Container = <ItemKey extends string, Roles extends string>({
 
     const defaultPath = getPath(specialDefaultKey || defaultKey)?.path;
     const profilePath = getPath(profileKey)?.path;
-    const activeItem = getPath(activeKey);
+    const activeItemParents = getMenuItemWithParents(items, activeKey);
+
+    const menuItemMap = ({ key, label, icon, path, children }: ContainerMenuItem<ItemKey, Roles>): ItemType => {
+        if (!children) {
+            return {
+                key,
+                label,
+                icon,
+                onClick: () => {
+                    navigate(path);
+                },
+            };
+        }
+
+        if (children.length === 1) {
+            return menuItemMap(children[0]);
+        }
+
+        return {
+            key,
+            label,
+            icon,
+            children: children.map(menuItemMap),
+        };
+    };
 
     return (
         <ConfigProvider prefixCls='container' iconPrefixCls='container-icon'>
             <ContainerContext.Provider value={{ title, setTitle }}>
                 <Layout className='contaier-main-layout'>
                     <Sider trigger={null} collapsible collapsed={collapsed}>
-                        {logo?.(collapsed)}
-                        <Menu
-                            theme='dark'
-                            mode='inline'
-                            items={menuItems.map(({ key, label, icon, path }) => ({
-                                key,
-                                label,
-                                icon,
-                                onClick: () => {
-                                    navigate(path);
-                                },
-                            }))}
-                            selectedKeys={[activeKey]}
-                        />
+                        <div className='container-logo'>{logo?.(collapsed)}</div>
+                        <Menu theme='dark' mode='inline' items={items.map(menuItemMap)} selectedKeys={[activeKey]} />
                     </Sider>
                     <Layout>
                         <Header>
@@ -114,19 +200,20 @@ const Container = <ItemKey extends string, Roles extends string>({
                                     onClick: () => setCollapsed((collapsed) => !collapsed),
                                 })}
                                 <Breadcrumb>
-                                    {activeItem && (
-                                        <Breadcrumb.Item>
-                                            {title ? (
-                                                <Link to={activeItem.path}>{activeItem.label}</Link>
-                                            ) : (
-                                                activeItem.label
-                                            )}
-                                        </Breadcrumb.Item>
-                                    )}
+                                    {activeItemParents.length &&
+                                        activeItemParents.map((item, index) => (
+                                            <Breadcrumb.Item key={item.key}>
+                                                {(title || index !== activeItemParents.length - 1) && item.path ? (
+                                                    <Link to={item.path}>{item.label}</Link>
+                                                ) : (
+                                                    item.label
+                                                )}
+                                            </Breadcrumb.Item>
+                                        ))}
                                     {title && <Breadcrumb.Item>{title}</Breadcrumb.Item>}
                                 </Breadcrumb>
                             </Space>
-                            <Space>
+                            <Space size={16}>
                                 {userData.fullName && (
                                     <div
                                         className={
@@ -151,9 +238,22 @@ const Container = <ItemKey extends string, Roles extends string>({
                         </Header>
                         <Content>
                             <Routes>
-                                {items.map((item) => (
-                                    <Route key={item.key} path={item.path} element={item.element} />
-                                ))}
+                                {items.map((item) => {
+                                    if (item.children) {
+                                        return (
+                                            <>
+                                                {item.children.map((childItem) => (
+                                                    <Route
+                                                        key={childItem.key}
+                                                        path={childItem.path}
+                                                        element={childItem.element}
+                                                    />
+                                                ))}
+                                            </>
+                                        );
+                                    }
+                                    return <Route key={item.key} path={item.path} element={item.element} />;
+                                })}
                                 {defaultPath && <Route path='*' element={<Navigate to={defaultPath} />} />}
                             </Routes>
                         </Content>

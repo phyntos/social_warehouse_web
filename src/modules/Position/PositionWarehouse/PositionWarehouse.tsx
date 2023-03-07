@@ -1,16 +1,18 @@
 import dayjs from 'dayjs';
 import { ProTabulator } from 'pro-tabulator';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { PRIMARY_COLOR } from '../../../bootstrap';
-import ProButton from '../../../common/ProButton/ProButton';
 import { getTableRequest } from '../../../functions';
-import { AppealListParams, AppealListVM, useGetDirectoriesQuery, useLazyGetAppealsQuery } from '../AppealApi/AppealApi';
+import {
+    AppealListParams,
+    AppealListVM,
+    useGetDirectoriesQuery,
+    useLazyGetAppealsQuery,
+} from '../../Appeal/AppealApi/AppealApi';
 
-const AppealList = () => {
+const PositionWarehouse = () => {
     const [getAppeals] = useLazyGetAppealsQuery();
     const { data: directories } = useGetDirectoriesQuery();
-    const navigate = useNavigate();
 
     return (
         <ProTabulator<AppealListVM, AppealListParams>
@@ -36,12 +38,6 @@ const AppealList = () => {
                     },
                 },
             ]}
-            rowClick={(record) => {
-                if (record.id) {
-                    navigate(`/appeals/item/${record.id}`);
-                }
-            }}
-            toolBarRender={() => [<ProButton key='create'>Создать заявку</ProButton>]}
             downloadProps={{
                 fileName: 'Заявки',
             }}
@@ -57,4 +53,4 @@ const AppealList = () => {
     );
 };
 
-export default AppealList;
+export default PositionWarehouse;

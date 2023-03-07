@@ -4,11 +4,10 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useContainerTitle } from '../../../common/Container/Container';
 import ProHeader from '../../../common/ProHeader/ProHeader';
-import { useGetAppealByIdQuery } from '../AppealApi/AppealApi';
-import './AppealItem.scss';
+import { useGetAppealByIdQuery } from '../../Appeal/AppealApi/AppealApi';
 
-const AppealItem = () => {
-    useContainerTitle('Карточка заявки');
+const OperationItem = () => {
+    useContainerTitle('Карточка операции');
     const { id = '' } = useParams();
     const { data: appeal, isFetching } = useGetAppealByIdQuery(id, { skip: !id });
 
@@ -35,4 +34,4 @@ const AppealItem = () => {
     );
 };
 
-export default AppealItem;
+export default OperationItem;

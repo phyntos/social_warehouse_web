@@ -7,12 +7,12 @@ import AntProvider from './common/AntProvider';
 import { store } from './redux/store';
 
 const container = document.getElementById('ueo-deliver-order-root');
-export const PRIMARY_COLOR = '#35BDB2';
+export const PRIMARY_COLOR = '#31b4a9';
 if (container) {
     render(
         <BrowserRouter>
             <Provider store={store}>
-                <AntProvider primaryColor={PRIMARY_COLOR}>
+                <AntProvider primaryColor={PRIMARY_COLOR} prefix='scms'>
                     <App />
                 </AntProvider>
             </Provider>
