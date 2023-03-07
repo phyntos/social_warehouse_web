@@ -45,6 +45,7 @@ const AppealPosition = ({
                     width: '30%',
                 },
             ]}
+            params={{ appealId }}
             rowKey='id'
             ordered
             actionRef={actionRef}
