@@ -2,7 +2,7 @@ import React from 'react';
 import { useDirectoryEditableColumns } from '../../../common/Directory/DirectoryApi';
 import EditableTable from '../../../common/EditableTable/EditableTable';
 
-export type WarehousePositionVM = {
+export type ShopPositionVM = {
     id: string;
     name?: string;
     catalogId?: string;
@@ -10,17 +10,17 @@ export type WarehousePositionVM = {
     count?: number;
 };
 
-export type WarehousePositionParams = {
-    warehouseId?: string;
+export type ShopPositionParams = {
+    shopId?: string;
     name?: string;
     count?: number;
 };
 
-const WarehousePosition = ({ id: warehouseId }: { id: string }) => {
-    const catalogDirectoryColumns = useDirectoryEditableColumns<WarehousePositionVM, 'catalog'>('catalog', 'Товар');
+const ShopPosition = ({ id: shopId }: { id: string }) => {
+    const catalogDirectoryColumns = useDirectoryEditableColumns<ShopPositionVM, 'catalog'>('catalog', 'Товар');
 
     return (
-        <EditableTable<WarehousePositionVM, WarehousePositionParams>
+        <EditableTable<ShopPositionVM, ShopPositionParams>
             columns={[
                 ...catalogDirectoryColumns,
                 {
@@ -30,10 +30,10 @@ const WarehousePosition = ({ id: warehouseId }: { id: string }) => {
                     width: '30%',
                 },
             ]}
-            params={{ warehouseId }}
-            type='warehousePositions'
+            params={{ shopId }}
+            type='shopPositions'
         />
     );
 };
 
-export default WarehousePosition;
+export default ShopPosition;

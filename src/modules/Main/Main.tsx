@@ -17,6 +17,7 @@ import Catalog from '../Catalog/Catalog';
 import Operation from '../Operation/Operation';
 import Profile from '../Profile/Profile';
 import Report from '../Report/Report';
+import Shop from '../Shop/Shop';
 import Warehouse from '../Warehouse/Warehouse';
 
 const Main = () => {
@@ -47,7 +48,7 @@ const Main = () => {
                     key: 'shops',
                     icon: <ShopOutlined />,
                     label: 'Магазины',
-                    element: <Warehouse />,
+                    element: <Shop />,
                     path: '/shops/*',
                     roles: ['root', 'contact', 'sales-manager', 'sales-head', 'admin', 'warehouse-manager'],
                 },

@@ -8,6 +8,7 @@ import { getTableRequest } from '../../../functions';
 import {
     OperationListParams,
     OperationListVM,
+    OperationTypesEnum,
     useCreateOperationMutation,
     useGetDirectoriesQuery,
     useLazyGetOperationsQuery,
@@ -34,12 +35,22 @@ const OperationList = () => {
                 },
                 {
                     dataIndex: 'status',
-                    width: 250,
+                    width: 150,
                     title: 'Статус заявки',
                     valueType: 'select',
                     fieldProps: {
                         mode: 'multiple',
                         options: directories?.statuses,
+                    },
+                },
+                {
+                    dataIndex: 'operationType',
+                    width: 150,
+                    title: 'Тип операции',
+                    valueType: 'select',
+                    valueEnum: OperationTypesEnum,
+                    fieldProps: {
+                        mode: 'multiple',
                     },
                 },
             ]}

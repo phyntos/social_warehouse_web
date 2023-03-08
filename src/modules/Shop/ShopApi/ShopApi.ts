@@ -2,13 +2,13 @@ import { PaginationParams, PaginationResponse } from '../../../functions';
 import { MainApi } from '../../../redux/api';
 import { BaseVM } from '../../../redux/types';
 
-export interface WarehouseListVM extends BaseVM {
+export interface ShopListVM extends BaseVM {
     id: string;
     name: string;
     address: string;
 }
 
-export type WarehouseListParams = {
+export type ShopListParams = {
     code?: string;
     status?: string;
     shopName?: string;
@@ -16,28 +16,28 @@ export type WarehouseListParams = {
     createdBefore?: string;
 };
 
-type WarehouseListPaginationResponse = PaginationResponse<WarehouseListVM>;
-type WarehouseListPaginationParams = PaginationParams<WarehouseListParams>;
+type ShopListPaginationResponse = PaginationResponse<ShopListVM>;
+type ShopListPaginationParams = PaginationParams<ShopListParams>;
 
-export const WarehouseApi = MainApi.injectEndpoints({
+export const ShopApi = MainApi.injectEndpoints({
     endpoints: (build) => {
         return {
-            getWarehouses: build.query<WarehouseListPaginationResponse, WarehouseListPaginationParams>({
+            getShops: build.query<ShopListPaginationResponse, ShopListPaginationParams>({
                 query: (params) => ({
-                    url: '/warehouses',
+                    url: '/shops',
                     method: 'GET',
                     params,
                 }),
             }),
-            createWarehouse: build.mutation<string, void>({
+            createShop: build.mutation<string, void>({
                 query: () => ({
-                    url: '/warehouses',
+                    url: '/shops',
                     method: 'POST',
                 }),
             }),
-            getWarehouse: build.query<WarehouseListVM, string>({
+            getShop: build.query<ShopListVM, string>({
                 query: (id) => ({
-                    url: '/warehouses/' + id,
+                    url: '/shops/' + id,
                     method: 'GET',
                 }),
             }),
@@ -45,4 +45,4 @@ export const WarehouseApi = MainApi.injectEndpoints({
     },
 });
 
-export const { useLazyGetWarehousesQuery, useCreateWarehouseMutation, useGetWarehouseQuery } = WarehouseApi;
+export const { useLazyGetShopsQuery, useCreateShopMutation, useGetShopQuery } = ShopApi;

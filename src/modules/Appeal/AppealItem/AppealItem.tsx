@@ -32,6 +32,7 @@ const AppealItem = () => {
     const { data: appeal, isFetching, refetch } = useGetAppealByIdQuery(id, { skip: !id });
     const [postAction] = usePostActionAppealMutation();
     const [updateAppeal] = useUpdateAppealMutation();
+    useContainerTitle(appeal?.code || '');
 
     const dispatch = useAppDispatch();
 

@@ -16,7 +16,7 @@ export interface ActionMethodResult<T> {
 }
 
 const commonQuery = fetchBaseQuery({
-    baseUrl: 'https:/10.8.0.36:8001/api',
+    baseUrl: 'https:/10.8.0.7:8001/api',
     prepareHeaders: (headers, { getState }) => {
         const state = getState() as RootState;
         const token = selectToken(state);

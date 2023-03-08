@@ -8,6 +8,7 @@ export type OperationListVM = {
     code: string;
     status: string;
     statusCode: OperationStatusCodes;
+    operationType?: OperationTypeCodes;
     shopName?: string;
     created: string;
 };
@@ -20,6 +21,11 @@ export interface OperationVM extends BaseVM {
     contact?: ContactVM & {
         shop?: ShopVM;
     };
+    operationType?: OperationTypeCodes;
+    fromPlaceType?: 'Warehouse' | 'Shop';
+    fromPlaceGuid?: string;
+    toPlaceType?: 'Warehouse' | 'Shop';
+    toPlaceGuid?: string;
     reason?: string;
     shop?: ShopVM;
     status?: BaseDirectory;
@@ -35,6 +41,7 @@ export type OperationListParams = {
     shopName?: string;
     createdAfter?: string;
     createdBefore?: string;
+    operationType?: OperationTypeCodes[];
 };
 
 export type OperationDirectories = {
@@ -61,6 +68,20 @@ export type OperationStatusCodes =
     /// Отказано клиентом
     | 'CLIENT_REJECTED';
 
+export type OperationTypeCodes =
+    ///Пополнение
+    | 'Adding'
+    ///Списание
+    | 'Removing'
+    ///Перемещение
+    | 'Movement';
+
+export const OperationTypesEnum: Record<OperationTypeCodes, string> = {
+    Adding: 'Пополнение',
+    Removing: 'Списание',
+    Movement: 'Перемещение',
+};
+
 type OperationListPaginationResponse = PaginationResponse<OperationListVM>;
 type OperationListPaginationParams = PaginationParams<OperationListParams>;
 
@@ -81,9 +102,10 @@ export const OperationApi = MainApi.injectEndpoints({
                 }),
             }),
             postActionOperation: build.mutation<void, OperationVM>({
-                query: () => ({
+                query: (body) => ({
                     url: '/operations/action',
                     method: 'POST',
+                    body,
                 }),
             }),
             getDirectories: build.query<OperationDirectories, void>({
