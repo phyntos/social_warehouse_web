@@ -36,7 +36,7 @@ export const CatalogApi = MainApi.injectEndpoints({
         return {
             getCatalogs: build.query<CatalogListPaginationResponse, CatalogListPaginationParams>({
                 query: (params) => ({
-                    url: '/deliveryOrderCargo',
+                    url: '/catalogs',
                     method: 'GET',
                     params,
                 }),

@@ -1,6 +1,5 @@
 import { ContainerOutlined } from '@ant-design/icons';
 import {
-    ClusterOutlined,
     ControlOutlined,
     DatabaseOutlined,
     PartitionOutlined,
@@ -12,13 +11,13 @@ import React from 'react';
 import Container from '../../common/Container/Container';
 import Logo from '../../components/Logo/Logo';
 import { useAppDispatch } from '../../redux/hooks';
-import Report from '../Report/Report';
 import Appeal from '../Appeal/Appeal';
 import { setToken, useTokenData } from '../Auth/AuthApi/AuthSlice';
 import Catalog from '../Catalog/Catalog';
 import Operation from '../Operation/Operation';
-import Position from '../Position/Position';
 import Profile from '../Profile/Profile';
+import Report from '../Report/Report';
+import Warehouse from '../Warehouse/Warehouse';
 
 const Main = () => {
     const fullName = useTokenData('fullname');
@@ -37,28 +36,20 @@ const Main = () => {
                     roles: ['root', 'contact', 'sales-manager', 'sales-head', 'admin', 'warehouse-manager'],
                 },
                 {
-                    key: 'position',
-                    icon: <ClusterOutlined />,
-                    label: 'Положение',
+                    key: 'warehouses',
+                    icon: <DatabaseOutlined />,
+                    label: 'Склады',
+                    element: <Warehouse />,
+                    path: '/warehouses/*',
                     roles: ['root', 'contact', 'sales-manager', 'sales-head', 'admin', 'warehouse-manager'],
-                    children: [
-                        {
-                            key: 'warehouses',
-                            icon: <DatabaseOutlined />,
-                            label: 'Склады',
-                            element: <Position type='Warehouse' />,
-                            path: '/position/warehouses',
-                            roles: ['root', 'contact', 'sales-manager', 'sales-head', 'admin', 'warehouse-manager'],
-                        },
-                        {
-                            key: 'shops',
-                            icon: <ShopOutlined />,
-                            label: 'Магазины',
-                            element: <Position type='Shop' />,
-                            path: '/position/shops',
-                            roles: ['root', 'contact', 'sales-manager', 'sales-head', 'admin', 'warehouse-manager'],
-                        },
-                    ],
+                },
+                {
+                    key: 'shops',
+                    icon: <ShopOutlined />,
+                    label: 'Магазины',
+                    element: <Warehouse />,
+                    path: '/shops/*',
+                    roles: ['root', 'contact', 'sales-manager', 'sales-head', 'admin', 'warehouse-manager'],
                 },
                 {
                     key: 'appeals',
