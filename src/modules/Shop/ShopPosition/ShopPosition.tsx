@@ -1,6 +1,7 @@
 import React from 'react';
-import { useDirectoryEditableColumns } from '../../../common/Directory/DirectoryApi';
-import EditableTable from '../../../common/EditableTable/EditableTable';
+import { useDirectoryEditableColumns } from '../../../components/Directory/DirectoryApi';
+import EditableTable from '../../../components/EditableTable/EditableTable';
+import { numberNormalize } from '../../../functions';
 
 export type ShopPositionVM = {
     id: string;
@@ -17,7 +18,10 @@ export type ShopPositionParams = {
 };
 
 const ShopPosition = ({ id: shopId }: { id: string }) => {
-    const catalogDirectoryColumns = useDirectoryEditableColumns<ShopPositionVM, 'catalog'>('catalog', 'Товар');
+    const catalogDirectoryColumns = useDirectoryEditableColumns<ShopPositionVM, 'catalog'>({
+        type: 'catalog',
+        title: 'Товар',
+    });
 
     return (
         <EditableTable<ShopPositionVM, ShopPositionParams>
@@ -27,7 +31,10 @@ const ShopPosition = ({ id: shopId }: { id: string }) => {
                     dataIndex: 'count',
                     title: 'Количество',
                     valueType: 'text',
-                    width: '30%',
+                    formItemProps: {
+                        normalize: numberNormalize({ isInteger: true, isPositive: true }),
+                    },
+                    width: 100,
                 },
             ]}
             params={{ shopId }}

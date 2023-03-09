@@ -108,8 +108,8 @@ export const OperationApi = MainApi.injectEndpoints({
                     body,
                 }),
             }),
-            getDirectories: build.query<OperationDirectories, void>({
-                query: () => '/directories/appeal',
+            getOperationDirectories: build.query<OperationDirectories, void>({
+                query: () => '/directories/operation',
             }),
             getOperationById: build.query<OperationVM, string>({
                 query: (id) => ({
@@ -132,7 +132,7 @@ export const OperationApi = MainApi.injectEndpoints({
 
 export const {
     useLazyGetOperationsQuery,
-    useGetDirectoriesQuery,
+    useGetOperationDirectoriesQuery,
     useGetOperationByIdQuery,
     useCreateOperationMutation,
     usePostActionOperationMutation,

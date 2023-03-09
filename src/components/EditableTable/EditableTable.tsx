@@ -17,11 +17,26 @@ const EditableTable = <EditableTableVM extends Record<string, any>, EditableTabl
     params = {} as EditableTableParams,
     columns,
     actionRef,
+    hiddenProps,
 }: {
     type: EditableTableTypes;
     params?: EditableTableParams;
     columns: ProTabulatorColumn<EditableTableVM>[];
     actionRef?: React.MutableRefObject<ActionType | undefined> | undefined;
+    hiddenProps?:
+        | {
+              create?: boolean | undefined;
+              saveMultiple?: boolean | undefined;
+              deleteMultiple?: boolean | undefined;
+              actions?:
+                  | true
+                  | {
+                        edit?: boolean | undefined;
+                        delete?: boolean | undefined;
+                    }
+                  | undefined;
+          }
+        | undefined;
 }) => {
     const getEditableTables = useGetEditableTable<EditableTableVM, EditableTableParams>(type);
     const createEditableTable = useCreateEditableItem<EditableTableParams>(type);
@@ -41,6 +56,7 @@ const EditableTable = <EditableTableVM extends Record<string, any>, EditableTabl
             downloadProps={{
                 fileName: 'Список товаров',
             }}
+            scroll={{ x: 1400 }}
             disableHeightScroll
             colorPrimary={PRIMARY_COLOR}
             editableProps={{
@@ -56,6 +72,7 @@ const EditableTable = <EditableTableVM extends Record<string, any>, EditableTabl
                 hidden: {
                     deleteMultiple: true,
                     saveMultiple: true,
+                    ...hiddenProps,
                 },
             }}
         />

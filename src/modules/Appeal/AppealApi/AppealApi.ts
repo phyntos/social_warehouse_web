@@ -23,7 +23,7 @@ export interface AppealVM extends BaseVM {
     reason?: string;
     shop?: ShopVM;
     status?: BaseDirectory;
-    statusCode?: string;
+    statusCode?: AppealStatusCodes;
     logs?: LogVM;
     actions?: ActionVM<AppealActionCodes>[];
     workflows?: WorkflowVM<AppealStatusCodes>[];

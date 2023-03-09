@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { PRIMARY_COLOR } from '../../../bootstrap';
 import ProButton from '../../../common/ProButton/ProButton';
 import { getTableRequest } from '../../../functions';
+import useAppealAccess from '../AppealAccess/useAppealAccess';
 import {
     AppealListParams,
     AppealListVM,
@@ -17,6 +18,8 @@ const AppealList = () => {
     const [getAppeals] = useLazyGetAppealsQuery();
     const { data: directories } = useGetDirectoriesQuery();
     const [create] = useCreateAppealMutation();
+
+    const { readCreateAppeal } = useAppealAccess('CreateAppeal');
 
     const navigate = useNavigate();
 
@@ -48,17 +51,21 @@ const AppealList = () => {
                     navigate(`/appeals/item/${record.id}`);
                 }
             }}
-            toolBarRender={() => [
-                <ProButton
-                    key='create'
-                    onAsyncClick={async () => {
-                        const id = await create().unwrap();
-                        if (id) navigate(`/appeals/item/${id}`);
-                    }}
-                >
-                    Создать заявку
-                </ProButton>,
-            ]}
+            toolBarRender={() =>
+                readCreateAppeal
+                    ? [
+                          <ProButton
+                              key='create'
+                              onAsyncClick={async () => {
+                                  const id = await create().unwrap();
+                                  if (id) navigate(`/appeals/item/${id}`);
+                              }}
+                          >
+                              Создать заявку
+                          </ProButton>,
+                      ]
+                    : []
+            }
             downloadProps={{
                 fileName: 'Заявки',
             }}

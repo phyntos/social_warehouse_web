@@ -1,7 +1,8 @@
 import { ActionType } from '@ant-design/pro-components';
 import React from 'react';
-import { useDirectoryEditableColumns } from '../../../common/Directory/DirectoryApi';
-import EditableTable from '../../../common/EditableTable/EditableTable';
+import { useDirectoryEditableColumns } from '../../../components/Directory/DirectoryApi';
+import EditableTable from '../../../components/EditableTable/EditableTable';
+import { numberNormalize } from '../../../functions';
 
 export type OperationPositionVM = {
     id: string;
@@ -24,7 +25,10 @@ const OperationPosition = ({
     operationId: string;
     actionRef?: React.MutableRefObject<ActionType | undefined> | undefined;
 }) => {
-    const catalogDirectoryColumns = useDirectoryEditableColumns<OperationPositionVM, 'catalog'>('catalog', 'Товар');
+    const catalogDirectoryColumns = useDirectoryEditableColumns<OperationPositionVM, 'catalog'>({
+        type: 'catalog',
+        title: 'Товар',
+    });
 
     return (
         <EditableTable<OperationPositionVM, OperationPositionParams>
@@ -35,7 +39,10 @@ const OperationPosition = ({
                     dataIndex: 'count',
                     title: 'Количество',
                     valueType: 'text',
-                    width: '30%',
+                    formItemProps: {
+                        normalize: numberNormalize({ isInteger: true, isPositive: true }),
+                    },
+                    width: 100,
                 },
             ]}
             params={{ operationId }}

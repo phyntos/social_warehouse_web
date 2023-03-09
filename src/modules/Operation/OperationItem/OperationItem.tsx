@@ -4,16 +4,17 @@ import { Col, Row, Space, Spin } from 'antd';
 import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useContainerTitle } from '../../../common/Container/Container';
-import { useLazyGetDirectoryQuery } from '../../../common/Directory/DirectoryApi';
 import ProButton from '../../../common/ProButton/ProButton';
+import { useProContainerTitle } from '../../../common/ProContainer/ProContainer';
 import ProHeader from '../../../common/ProHeader/ProHeader';
 import ProWorkflow from '../../../common/ProWorkflow/ProWorkflow';
+import DirectorySelect from '../../../components/Directory/DirectorySelect';
 import { deepComparison } from '../../../functions';
 import { useAppDispatch } from '../../../redux/hooks';
 import {
     OperationActionCodes,
     OperationApi,
+    OperationTypeCodes,
     OperationTypesEnum,
     OperationVM,
     useGetOperationByIdQuery,
@@ -25,6 +26,8 @@ import './OperationItem.scss';
 
 const ValidateActions: OperationActionCodes[] = ['SEND_TO_CONFIRMATION'];
 
+const toLowerCase = <T extends string>(str: T) => str.toLowerCase() as Lowercase<T>;
+
 const OperationItem = () => {
     const { id = '' } = useParams();
     const operationPositonRef = useRef<ActionType>();
@@ -33,9 +36,7 @@ const OperationItem = () => {
     const { data: operation, isFetching, refetch } = useGetOperationByIdQuery(id, { skip: !id });
     const [postAction] = usePostActionOperationMutation();
     const [updateOperation] = useUpdateOperationMutation();
-    useContainerTitle(operation?.code || '');
-
-    const [getDirectory] = useLazyGetDirectoryQuery();
+    useProContainerTitle(operation?.code || '');
 
     const operationType = ProForm.useWatch('operationType', form);
     const fromPlaceType = ProForm.useWatch('fromPlaceType', form);
@@ -79,6 +80,10 @@ const OperationItem = () => {
         dispatch(OperationApi.util.invalidateTags([{ type: 'Operation', id }]));
     };
 
+    const setField = <Key extends keyof OperationVM>(name: Key, value: OperationVM[Key] | undefined = undefined) => {
+        form.setFieldValue(name, value);
+    };
+
     return (
         <Spin spinning={isFetching}>
             <ProHeader
@@ -106,7 +111,33 @@ const OperationItem = () => {
             <ProForm submitter={false} form={form} className='operation-item-form'>
                 <Row gutter={[10, 10]}>
                     <Col span={6}>
-                        <ProFormSelect name='operationType' valueEnum={OperationTypesEnum} label='Тип операции' />
+                        <ProFormSelect<OperationTypeCodes>
+                            name='operationType'
+                            valueEnum={OperationTypesEnum}
+                            label='Тип операции'
+                            fieldProps={{
+                                onChange: (value) => {
+                                    setField('fromPlaceGuid');
+                                    setField('toPlaceGuid');
+                                    switch (value) {
+                                        case 'Movement':
+                                            setField('fromPlaceType', 'Warehouse');
+                                            setField('toPlaceType', 'Shop');
+                                            break;
+                                        case 'Adding':
+                                            setField('fromPlaceType');
+                                            setField('toPlaceType', 'Warehouse');
+                                            break;
+                                        case 'Removing':
+                                            setField('fromPlaceType', 'Warehouse');
+                                            setField('toPlaceType');
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                },
+                            }}
+                        />
                     </Col>
                     <Col span={6}>
                         <ProFormDatePicker label='Дата операции' name='operationDate' />
@@ -126,7 +157,7 @@ const OperationItem = () => {
                     </Col>
                     <Col span={6}>
                         {operationType !== 'Adding' && (
-                            <>
+                            <Space align='end' className='operation-place-field'>
                                 <ProFormRadio.Group
                                     valueEnum={{
                                         Warehouse: 'Склад',
@@ -135,22 +166,18 @@ const OperationItem = () => {
                                     radioType='button'
                                     label='Откуда'
                                     name='fromPlaceType'
+                                    disabled={operationType === 'Movement'}
+                                    fieldProps={{ onChange: () => setField('fromPlaceGuid') }}
                                 />
                                 {fromPlaceType && (
-                                    <ProFormSelect
-                                        name='fromPlaceGuid'
-                                        params={{ type: fromPlaceType }}
-                                        request={async ({ keyWords, type }) => {
-                                            return getDirectory({ type: type.toLowerCase(), text: keyWords }).unwrap();
-                                        }}
-                                    />
+                                    <DirectorySelect directory={toLowerCase(fromPlaceType)} name='fromPlaceGuid' />
                                 )}
-                            </>
+                            </Space>
                         )}
                     </Col>
                     <Col span={6}>
                         {operationType !== 'Removing' && (
-                            <>
+                            <Space align='end' className='operation-place-field'>
                                 <ProFormRadio.Group
                                     valueEnum={{
                                         Warehouse: 'Склад',
@@ -159,17 +186,13 @@ const OperationItem = () => {
                                     radioType='button'
                                     label='Куда'
                                     name='toPlaceType'
+                                    disabled
+                                    fieldProps={{ onChange: () => setField('toPlaceGuid') }}
                                 />
                                 {toPlaceType && (
-                                    <ProFormSelect
-                                        name='toPlaceGuid'
-                                        params={{ type: toPlaceType }}
-                                        request={async ({ keyWords, type }) => {
-                                            return getDirectory({ type: type.toLowerCase(), text: keyWords }).unwrap();
-                                        }}
-                                    />
+                                    <DirectorySelect directory={toLowerCase(toPlaceType)} name='toPlaceGuid' />
                                 )}
-                            </>
+                            </Space>
                         )}
                     </Col>
                 </Row>

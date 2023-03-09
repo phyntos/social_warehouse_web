@@ -1,6 +1,6 @@
 import React from 'react';
-import { useDirectoryEditableColumns } from '../../common/Directory/DirectoryApi';
-import EditableTable from '../../common/EditableTable/EditableTable';
+import { useDirectoryEditableColumns } from '../../components/Directory/DirectoryApi';
+import EditableTable from '../../components/EditableTable/EditableTable';
 
 export type CatalogVM = {
     id: string;
@@ -15,10 +15,10 @@ export type CatalogParams = {
 };
 
 const Catalog = () => {
-    const catalogGroupDirectoryColumns = useDirectoryEditableColumns<CatalogVM, 'catalogGroup'>(
-        'catalogGroup',
-        'Тип товара',
-    );
+    const catalogGroupDirectoryColumns = useDirectoryEditableColumns<CatalogVM, 'catalogGroup'>({
+        type: 'catalogGroup',
+        title: 'Тип товара',
+    });
 
     return (
         <EditableTable<CatalogVM, CatalogParams>
@@ -26,6 +26,7 @@ const Catalog = () => {
                 {
                     dataIndex: 'name',
                     title: 'Товар',
+                    width: 200,
                     valueType: 'text',
                 },
                 ...catalogGroupDirectoryColumns,

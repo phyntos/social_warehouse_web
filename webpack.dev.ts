@@ -1,7 +1,6 @@
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import { Configuration as WebpackConfiguration } from 'webpack';
 import { Configuration as WebpackDevServerConfiguration } from 'webpack-dev-server';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { merge } from 'webpack-merge';
 import commonConfig from './webpack.common';
 
@@ -12,19 +11,13 @@ interface Configuration extends WebpackConfiguration {
 const config: Configuration = {
     devtool: 'inline-source-map',
     mode: 'development',
-    plugins: [
-        new HtmlWebpackPlugin({
-            template: './public/index.html',
-        }),
-        new ForkTsCheckerWebpackPlugin(),
-    ],
+    plugins: [new ForkTsCheckerWebpackPlugin()],
     output: {
         filename: '[name].js',
         publicPath: 'auto',
     },
     devServer: {
         historyApiFallback: true,
-        host: '10.8.0.44',
         port: 3004,
         hot: true,
         open: true,

@@ -1,8 +1,10 @@
 import { ActionType } from '@ant-design/pro-components';
 import { ProTabulatorColumn } from 'pro-tabulator/dist/types';
 import React from 'react';
-import { useDirectoryEditableColumns, useGetDirectoryQuery } from '../../../common/Directory/DirectoryApi';
-import EditableTable from '../../../common/EditableTable/EditableTable';
+import { useDirectoryEditableColumns, useGetDirectoryQuery } from '../../../components/Directory/DirectoryApi';
+import EditableTable from '../../../components/EditableTable/EditableTable';
+import { numberNormalize } from '../../../functions';
+import useAppealAccess from '../AppealAccess/useAppealAccess';
 
 export type AppealPositionVM = {
     id: string;
@@ -29,15 +31,27 @@ const AppealPosition = ({
     actionRef?: React.MutableRefObject<ActionType | undefined> | undefined;
 }) => {
     const { data: warehouses } = useGetDirectoryQuery({ type: 'warehouse' });
-    const warehouseDirectoryColumns = useDirectoryEditableColumns<AppealPositionVM, 'warehouse'>(
-        'warehouse',
-        'Склад (с)',
+
+    const { readWarehouseColumns, writeWarehouseColumns, writeCatalogColumns } = useAppealAccess(
+        'WarehouseColumns',
+        'CatalogColumns',
     );
-    const catalogDirectoryColumns = useDirectoryEditableColumns<AppealPositionVM, 'catalog'>('catalog', 'Товар');
+
+    const warehouseDirectoryColumns = useDirectoryEditableColumns<AppealPositionVM, 'warehouse'>({
+        type: 'warehouse',
+        title: 'Используемый склад',
+        write: writeWarehouseColumns,
+        read: readWarehouseColumns,
+    });
+    const catalogDirectoryColumns = useDirectoryEditableColumns<AppealPositionVM, 'catalog'>({
+        type: 'catalog',
+        title: 'Товар',
+        write: writeCatalogColumns,
+    });
 
     const warehouseColumns: ProTabulatorColumn<AppealPositionVM>[] = (warehouses || []).map((warehouse, index) => ({
         dataIndex: warehouse.value + index,
-        title: warehouse.label,
+        title: warehouse.label + ' (в наличии)',
         width: 100,
         render: (text, record) => {
             const find = record.warehouseCounts?.find((x) => x.id === warehouse.value);
@@ -45,6 +59,7 @@ const AppealPosition = ({
             return 'Не определено';
         },
         editable: false,
+        hideInTable: !readWarehouseColumns,
     }));
 
     return (
@@ -58,11 +73,24 @@ const AppealPosition = ({
                     dataIndex: 'count',
                     title: 'Количество',
                     valueType: 'text',
-                    width: '30%',
+                    formItemProps: {
+                        normalize: numberNormalize({ isInteger: true, isPositive: true }),
+                    },
+                    width: 100,
+                    editable: !writeCatalogColumns ? false : undefined,
                 },
             ]}
             params={{ appealId }}
             type='appealPositions'
+            hiddenProps={{
+                actions: (!writeCatalogColumns && !writeWarehouseColumns) || {
+                    delete: !writeCatalogColumns,
+                    edit: false,
+                },
+                create: !writeCatalogColumns,
+                // deleteMultiple: !writeCatalogColumns,
+                // saveMultiple: !writeCatalogColumns && !writeWarehouseColumns,
+            }}
         />
     );
 };

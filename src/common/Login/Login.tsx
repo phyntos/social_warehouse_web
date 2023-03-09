@@ -17,6 +17,11 @@ const Login = <LoginVM extends { login: string; password: string }>({
     const classNames = ['login-container'];
     if (className) classNames.push(className);
 
+    const onLoginSubmit = async () => {
+        const fields = await form.validateFields();
+        await onLogin(fields);
+    };
+
     return (
         <ConfigProvider prefixCls='login'>
             <div className={classNames.join(' ')}>
@@ -32,12 +37,7 @@ const Login = <LoginVM extends { login: string; password: string }>({
                         label='Пароль'
                         rules={[{ required: true, message: 'Пожалуйства введите пароль' }]}
                     />
-                    <ProButton
-                        onAsyncClick={async () => {
-                            const fields = await form.validateFields();
-                            await onLogin(fields);
-                        }}
-                    >
+                    <ProButton htmlType='submit' onAsyncClick={onLoginSubmit}>
                         Войти
                     </ProButton>
                 </ProForm>

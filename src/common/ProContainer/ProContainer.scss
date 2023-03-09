@@ -1,80 +1,80 @@
-.container-layout.contaier-main-layout {
+.pro-container-layout.pro-container-main-layout {
     height: 100vh;
     width: 100vw;
     overflow: hidden;
 
-    .container-layout-sider {
+    .pro-container-layout-sider {
         position: absolute !important;
         height: 100vh;
         z-index: 4;
         // background: #001529da !important;
-        // .container-menu-dark {
+        // .pro-container-menu-dark {
         //     background: transparent;
         // }
     }
-    .container-trigger {
+    .pro-container-trigger {
         margin-left: 200px;
         transition: margin 0.2s;
     }
-    &:has(.container-layout-sider-collapsed) {
-        .container-trigger {
+    &:has(.pro-container-layout-sider-collapsed) {
+        .pro-container-trigger {
             margin-left: 80px;
         }
-        .container-layout-sider {
+        .pro-container-layout-sider {
             background: #001529 !important;
         }
-        .container-layout-content {
+        .pro-container-layout-content {
             margin-left: 80px;
         }
     }
     @media screen and (max-width: 768px) {
-        .container-layout-sider {
-            &.container-layout-sider-collapsed {
+        .pro-container-layout-sider {
+            &.pro-container-layout-sider-collapsed {
                 left: -80px;
             }
         }
 
-        .container-layout-content {
+        .pro-container-layout-content {
             margin-left: 0px !important;
         }
 
-        &:has(.container-layout-sider-collapsed) {
-            .container-trigger {
+        &:has(.pro-container-layout-sider-collapsed) {
+            .pro-container-trigger {
                 margin-left: 0px;
                 margin-right: 80px;
             }
-            .container-layout-header .container-header-user {
+            .pro-container-layout-header .pro-container-header-user {
                 display: flex;
             }
         }
 
-        .container-layout-header .container-header-user {
+        .pro-container-layout-header .pro-container-header-user {
             display: none;
         }
 
-        .container-layout-sider-collapsed {
-            .container-logo {
+        .pro-container-layout-sider-collapsed {
+            .pro-container-logo {
                 position: absolute;
                 left: 130px;
             }
         }
-        .container-logo {
+        .pro-container-logo {
             position: relative !important;
         }
     }
 
-    .container-logo {
+    .pro-container-logo {
         padding-top: 10px;
         padding-bottom: 10px;
     }
 
-    .container-menu-inline-collapsed > .container-menu-item,
-    .container-menu-inline-collapsed > .container-menu-submenu > .container-menu-submenu-title {
+    .pro-container-menu-inline-collapsed > .pro-container-menu-item,
+    .pro-container-menu-inline-collapsed > .pro-container-menu-submenu > .pro-container-menu-submenu-title {
         padding-left: calc(50% - 12px);
         padding-right: calc(50% - 12px);
     }
 
-    .container-layout-header {
+    .pro-container-layout-header {
         padding: 0;
         height: 50px;
         position: absolute;
@@ -91,9 +91,9 @@
         box-shadow: 0 4px 2px -2px rgba(0, 0, 0, 0.05);
     }
 
-    .container-layout:has(.container-layout-content) {
+    .pro-container-layout:has(.pro-container-layout-content) {
         height: calc(100vh - 50px);
-        .container-layout-content {
+        .pro-container-layout-content {
             box-shadow: 0 0px 4px 2px rgba(0, 0, 0, 0.05);
             border-radius: 6px;
         }
@@ -102,7 +102,7 @@
         padding: 16px;
     }
 
-    .container-layout-content {
+    .pro-container-layout-content {
         margin-left: 200px;
         transition: margin 0.2s;
         padding: 16px;
@@ -110,17 +110,17 @@
         min-height: unset;
     }
 
-    .container-header-user {
+    .pro-container-header-user {
         display: flex;
         min-width: 100px;
         text-align: right;
         flex-direction: column;
-        .container-user-role {
+        .pro-container-user-role {
             font-size: 12px;
             font-style: italic;
             color: #0000007f;
         }
-        &.container-header-profile {
+        &.pro-container-header-profile {
             cursor: pointer;
             &:hover {
                 color: var(--primary-color);

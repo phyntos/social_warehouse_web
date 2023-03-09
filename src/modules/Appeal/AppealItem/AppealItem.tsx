@@ -4,8 +4,8 @@ import { Col, Row, Space, Spin } from 'antd';
 import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useContainerTitle } from '../../../common/Container/Container';
 import ProButton from '../../../common/ProButton/ProButton';
+import { useProContainerTitle } from '../../../common/ProContainer/ProContainer';
 import ProHeader from '../../../common/ProHeader/ProHeader';
 import ProWorkflow from '../../../common/ProWorkflow/ProWorkflow';
 import { deepComparison } from '../../../functions';
@@ -24,7 +24,7 @@ import './AppealItem.scss';
 const ValidateActions: AppealActionCodes[] = ['SEND_TO_CONFIRMATION'];
 
 const AppealItem = () => {
-    useContainerTitle('Карточка заявки');
+    useProContainerTitle('Карточка заявки');
     const { id = '' } = useParams();
     const appealPositonRef = useRef<ActionType>();
 
@@ -32,7 +32,6 @@ const AppealItem = () => {
     const { data: appeal, isFetching, refetch } = useGetAppealByIdQuery(id, { skip: !id });
     const [postAction] = usePostActionAppealMutation();
     const [updateAppeal] = useUpdateAppealMutation();
-    useContainerTitle(appeal?.code || '');
 
     const dispatch = useAppDispatch();
 
@@ -94,12 +93,16 @@ const AppealItem = () => {
                     appealPositonRef.current?.reloadAndRest?.();
                 }}
             />
-            <ProWorkflow workflows={appeal?.workflows} />
+            <ProWorkflow workflows={appeal?.workflows} rejectedStatusCodes={['CLIENT_REJECTED']} />
 
             <ProForm submitter={false} form={form} className='appeal-item-form'>
                 <Row gutter={[10, 10]}>
                     <Col flex={1}>
-                        <ProFormDatePicker label='Дата забора' name='operationDate' />
+                        <ProFormDatePicker
+                            label='Дата забора'
+                            name='operationDate'
+                            rules={[{ required: true, message: 'Выберите дату забора' }]}
+                        />
                     </Col>
                     <Col>
                         <div style={{ textAlign: 'right' }}>

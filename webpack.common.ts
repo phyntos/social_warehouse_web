@@ -1,5 +1,6 @@
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import { Configuration, container } from 'webpack';
+import { Configuration } from 'webpack';
 
 const config: Configuration = {
     target: 'web',
@@ -7,6 +8,9 @@ const config: Configuration = {
     plugins: [
         new MiniCssExtractPlugin({
             filename: 'styles/[name].css',
+        }),
+        new HtmlWebpackPlugin({
+            template: './public/index.html',
         }),
     ],
     module: {

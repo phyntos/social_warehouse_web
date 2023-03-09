@@ -15,8 +15,16 @@ export interface ActionMethodResult<T> {
     exception: any;
 }
 
+const getBaseUrl = () => {
+    let url = window.location.host;
+
+    if (url.includes('3004')) url = 'localhost:8001';
+
+    return 'https://' + url + '/api';
+};
+
 const commonQuery = fetchBaseQuery({
-    baseUrl: 'https:/10.8.0.7:8001/api',
+    baseUrl: getBaseUrl(),
     prepareHeaders: (headers, { getState }) => {
         const state = getState() as RootState;
         const token = selectToken(state);

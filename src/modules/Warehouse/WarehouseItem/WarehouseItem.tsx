@@ -2,7 +2,7 @@ import { Spin } from 'antd';
 import dayjs from 'dayjs';
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { useContainerTitle } from '../../../common/Container/Container';
+import { useProContainerTitle } from '../../../common/ProContainer/ProContainer';
 import ProHeader from '../../../common/ProHeader/ProHeader';
 import { useGetWarehouseQuery } from '../WarehouseApi/WarehouseApi';
 import WarehousePosition from '../WarehousePosition/WarehousePosition';
@@ -10,7 +10,7 @@ import WarehousePosition from '../WarehousePosition/WarehousePosition';
 const WarehouseItem = () => {
     const { id = '' } = useParams();
     const { data: warehouse, isFetching } = useGetWarehouseQuery(id, { skip: !id });
-    useContainerTitle(warehouse?.name || '');
+    useProContainerTitle(warehouse?.name || '');
 
     return (
         <Spin spinning={isFetching}>

@@ -11,4 +11,15 @@
         border-radius: 6px;
         margin-bottom: 16px;
     }
+
+    .operation-picker {
+        width: 100%;
+    }
+
+    .operation-place-field {
+        width: 100%;
+        .operation-space-item:has(.operation-select) {
+            flex: 1;
+        }
+    }
 }

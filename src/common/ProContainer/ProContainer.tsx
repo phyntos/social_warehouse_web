@@ -3,21 +3,21 @@ import { Breadcrumb, ConfigProvider, Layout, Menu, Space, Tooltip } from 'antd';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import './Container.scss';
+import './ProContainer.scss';
 
 const { Header, Sider, Content } = Layout;
 
-type ContainerMenuItemWithChildren<ItemKey extends string, Roles extends string> = {
+type ProContainerMenuItemWithChildren<ItemKey extends string, Roles extends string> = {
     key: ItemKey;
     label: string;
     path?: undefined;
     element?: undefined;
     roles: Roles[];
     icon?: React.ReactNode;
-    children: ContainerMenuItem<ItemKey, Roles>[];
+    children: ProContainerMenuItem<ItemKey, Roles>[];
 };
 
-type ContainerMenuItemWithPath<ItemKey extends string, Roles extends string> = {
+type ProContainerMenuItemWithPath<ItemKey extends string, Roles extends string> = {
     key: ItemKey;
     label: string;
     path: string;
@@ -27,18 +27,18 @@ type ContainerMenuItemWithPath<ItemKey extends string, Roles extends string> = {
     children?: undefined;
 };
 
-type ContainerMenuItem<ItemKey extends string, Roles extends string> =
-    | ContainerMenuItemWithPath<ItemKey, Roles>
-    | ContainerMenuItemWithChildren<ItemKey, Roles>;
+type ProContainerMenuItem<ItemKey extends string, Roles extends string> =
+    | ProContainerMenuItemWithPath<ItemKey, Roles>
+    | ProContainerMenuItemWithChildren<ItemKey, Roles>;
 
-export const ContainerContext = React.createContext<{ title: string; setTitle: (title: string) => void }>({
+export const ProContainerContext = React.createContext<{ title: string; setTitle: (title: string) => void }>({
     title: '',
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     setTitle: () => {},
 });
 
-export const useContainerTitle = (title: string) => {
-    const { setTitle } = useContext(ContainerContext);
+export const useProContainerTitle = (title: string) => {
+    const { setTitle } = useContext(ProContainerContext);
 
     useEffect(() => {
         setTitle(title);
@@ -50,9 +50,9 @@ export const useContainerTitle = (title: string) => {
 };
 
 const getMenuItem = <ItemKey extends string, Roles extends string>(
-    items: ContainerMenuItem<ItemKey, Roles>[],
+    items: ProContainerMenuItem<ItemKey, Roles>[],
     key: ItemKey,
-): ContainerMenuItemWithPath<ItemKey, Roles> => {
+): ProContainerMenuItemWithPath<ItemKey, Roles> => {
     for (const item of items) {
         if (item.children) {
             const menuItem = getMenuItem(item.children, key);
@@ -62,13 +62,13 @@ const getMenuItem = <ItemKey extends string, Roles extends string>(
 
         if (item.key === key) return item;
     }
-    return {} as ContainerMenuItemWithPath<ItemKey, Roles>;
+    return {} as ProContainerMenuItemWithPath<ItemKey, Roles>;
 };
 
 const getMenuItemWithParents = <ItemKey extends string, Roles extends string>(
-    items: ContainerMenuItem<ItemKey, Roles>[],
+    items: ProContainerMenuItem<ItemKey, Roles>[],
     key: ItemKey,
-): ContainerMenuItem<ItemKey, Roles>[] => {
+): ProContainerMenuItem<ItemKey, Roles>[] => {
     for (const item of items) {
         if (item.children) {
             const menuItems = getMenuItemWithParents(item.children, key);
@@ -82,9 +82,9 @@ const getMenuItemWithParents = <ItemKey extends string, Roles extends string>(
 };
 
 const getMenuItemByString = <ItemKey extends string, Roles extends string>(
-    items: ContainerMenuItem<ItemKey, Roles>[],
+    items: ProContainerMenuItem<ItemKey, Roles>[],
     key: string,
-): ContainerMenuItemWithPath<ItemKey, Roles> => {
+): ProContainerMenuItemWithPath<ItemKey, Roles> => {
     for (const item of items) {
         if (item.children) {
             const menuItem = getMenuItemByString(item.children, key);
@@ -93,13 +93,13 @@ const getMenuItemByString = <ItemKey extends string, Roles extends string>(
         }
         if (key.includes(item.key)) return item;
     }
-    return {} as ContainerMenuItemWithPath<ItemKey, Roles>;
+    return {} as ProContainerMenuItemWithPath<ItemKey, Roles>;
 };
 
 const filterMenuItems = <ItemKey extends string, Roles extends string>(
-    items: ContainerMenuItem<ItemKey, Roles>[],
+    items: ProContainerMenuItem<ItemKey, Roles>[],
     role: Roles | null,
-): ContainerMenuItem<ItemKey, Roles>[] => {
+): ProContainerMenuItem<ItemKey, Roles>[] => {
     return items
         .filter((item) => (item.roles.length > 0 && role ? item.roles.includes(role) : true))
         .map((item) => {
@@ -112,7 +112,7 @@ const filterMenuItems = <ItemKey extends string, Roles extends string>(
         });
 };
 
-const Container = <ItemKey extends string, Roles extends string>({
+const ProContainer = <ItemKey extends string, Roles extends string>({
     menuItems,
     onLogout,
     defaultKey,
@@ -121,7 +121,7 @@ const Container = <ItemKey extends string, Roles extends string>({
     logo,
     userData,
 }: {
-    menuItems: ContainerMenuItem<ItemKey, Roles>[];
+    menuItems: ProContainerMenuItem<ItemKey, Roles>[];
     onLogout?: () => void;
     defaultKey: ItemKey;
     specialDefaultKeys?: Partial<Record<Roles, ItemKey>>;
@@ -160,7 +160,7 @@ const Container = <ItemKey extends string, Roles extends string>({
     const profilePath = getPath(profileKey)?.path;
     const activeItemParents = getMenuItemWithParents(items, activeKey);
 
-    const menuItemMap = ({ key, label, icon, path, children }: ContainerMenuItem<ItemKey, Roles>): ItemType => {
+    const menuItemMap = ({ key, label, icon, path, children }: ProContainerMenuItem<ItemKey, Roles>): ItemType => {
         if (!children) {
             return {
                 key,
@@ -185,18 +185,18 @@ const Container = <ItemKey extends string, Roles extends string>({
     };
 
     return (
-        <ConfigProvider prefixCls='container' iconPrefixCls='container-icon'>
-            <ContainerContext.Provider value={{ title, setTitle }}>
-                <Layout className='contaier-main-layout'>
+        <ConfigProvider prefixCls='pro-container' iconPrefixCls='pro-container-icon'>
+            <ProContainerContext.Provider value={{ title, setTitle }}>
+                <Layout className='pro-container-main-layout'>
                     <Sider trigger={null} collapsible collapsed={collapsed}>
-                        <div className='container-logo'>{logo?.(collapsed)}</div>
+                        <div className='pro-container-logo'>{logo?.(collapsed)}</div>
                         <Menu theme='dark' mode='inline' items={items.map(menuItemMap)} selectedKeys={[activeKey]} />
                     </Sider>
                     <Layout>
                         <Header>
                             <Space size={16}>
                                 {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-                                    className: 'icon-button container-trigger',
+                                    className: 'icon-button pro-container-trigger',
                                     onClick: () => setCollapsed((collapsed) => !collapsed),
                                 })}
                                 <Breadcrumb>
@@ -218,15 +218,15 @@ const Container = <ItemKey extends string, Roles extends string>({
                                     <div
                                         className={
                                             profilePath
-                                                ? 'container-header-user container-header-profile'
-                                                : 'container-header-user'
+                                                ? 'pro-container-header-user pro-container-header-profile'
+                                                : 'pro-container-header-user'
                                         }
                                         onClick={() => {
                                             if (profilePath) navigate(profilePath);
                                         }}
                                     >
                                         {userData.fullName}
-                                        <span className='container-user-role'>{userData.role}</span>
+                                        <span className='pro-container-user-role'>{userData.role}</span>
                                     </div>
                                 )}
                                 {onLogout && (
@@ -259,9 +259,9 @@ const Container = <ItemKey extends string, Roles extends string>({
                         </Content>
                     </Layout>
                 </Layout>
-            </ContainerContext.Provider>
+            </ProContainerContext.Provider>
         </ConfigProvider>
     );
 };
 
-export default Container;
+export default ProContainer;

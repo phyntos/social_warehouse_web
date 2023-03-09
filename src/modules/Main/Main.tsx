@@ -8,7 +8,7 @@ import {
     UserOutlined,
 } from '@ant-design/icons/lib/icons';
 import React from 'react';
-import Container from '../../common/Container/Container';
+import Container from '../../common/ProContainer/ProContainer';
 import Logo from '../../components/Logo/Logo';
 import { useAppDispatch } from '../../redux/hooks';
 import Appeal from '../Appeal/Appeal';
@@ -42,7 +42,7 @@ const Main = () => {
                     label: 'Склады',
                     element: <Warehouse />,
                     path: '/warehouses/*',
-                    roles: ['root', 'contact', 'sales-manager', 'sales-head', 'admin', 'warehouse-manager'],
+                    roles: ['root', 'sales-manager', 'sales-head', 'admin', 'warehouse-manager'],
                 },
                 {
                     key: 'shops',

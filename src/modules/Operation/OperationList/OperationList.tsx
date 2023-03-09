@@ -10,13 +10,13 @@ import {
     OperationListVM,
     OperationTypesEnum,
     useCreateOperationMutation,
-    useGetDirectoriesQuery,
+    useGetOperationDirectoriesQuery,
     useLazyGetOperationsQuery,
 } from '../OperationApi/OperationApi';
 
 const OperationList = () => {
     const [getOperations] = useLazyGetOperationsQuery();
-    const { data: directories } = useGetDirectoriesQuery();
+    const { data: directories } = useGetOperationDirectoriesQuery();
     const [create] = useCreateOperationMutation();
 
     const navigate = useNavigate();
@@ -49,6 +49,7 @@ const OperationList = () => {
                     title: 'Тип операции',
                     valueType: 'select',
                     valueEnum: OperationTypesEnum,
+                    excelRender: (val, record) => OperationTypesEnum[record.operationType!],
                     fieldProps: {
                         mode: 'multiple',
                     },
